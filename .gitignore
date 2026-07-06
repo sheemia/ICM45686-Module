@@ -1,0 +1,45 @@
+# 编辑器与操作系统文件
+.idea/
+.vscode/
+.theia/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*.tmp
+*.bak
+
+# 通用编译产物
+*.o
+*.obj
+*.d
+*.elf
+*.axf
+*.out
+*.hex
+*.bin
+*.map
+*.lst
+*.crf
+*.lnp
+*.dep
+
+# Keil MDK
+**/OBJ/
+**/Objects/
+**/Listings/
+*.uvguix.*
+*.uvoptx
+*.build_log.htm
+JLinkLog.txt
+JLinkSettings.ini
+
+# Code Composer Studio / clangd 生成文件
+**/Debug/
+**/Release/
+**/.clangd/.cache/
+compile_commands.json
+
+# 日志
+*.log
