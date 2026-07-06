@@ -25,7 +25,7 @@ An open-source six-axis inertial measurement module based on the TDK InvenSense 
 ### 在线资料
 
 - [立创开源硬件平台：ICM-45686 原理图与 PCB 工程](https://oshwhub.com/sheemia/project_ngmuvyoo)
-- 模块测试视频：待更新
+- [模块测试视频](https://www.bilibili.com/video/BV1RqT96wEXt/?spm_id_from=333.1387.homepage.video_card.click&vd_source=835a56ded42cebdec9cf08a5cdbdcd14)
 
 ### 仓库结构
 
@@ -156,7 +156,7 @@ MEMS 传感器存在零偏和温漂属于正常现象。高精度应用应在设
 ### Online Resources
 
 - [OSHWHub: ICM-45686 schematic and PCB project](https://oshwhub.com/sheemia/project_ngmuvyoo)
-- Module test video: coming soon
+- [Module test video: coming soon](https://www.bilibili.com/video/BV1RqT96wEXt/?spm_id_from=333.1387.homepage.video_card.click&vd_source=835a56ded42cebdec9cf08a5cdbdcd14)
 
 ### Repository Layout
 
