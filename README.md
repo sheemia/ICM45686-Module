@@ -156,7 +156,7 @@ MEMS 传感器存在零偏和温漂属于正常现象。高精度应用应在设
 ### Online Resources
 
 - [OSHWHub: ICM-45686 schematic and PCB project](https://oshwhub.com/sheemia/project_ngmuvyoo)
-- [Module test video: coming soon](https://www.bilibili.com/video/BV1RqT96wEXt/?spm_id_from=333.1387.homepage.video_card.click&vd_source=835a56ded42cebdec9cf08a5cdbdcd14)
+- [Module test video](https://www.bilibili.com/video/BV1RqT96wEXt/?spm_id_from=333.1387.homepage.video_card.click&vd_source=835a56ded42cebdec9cf08a5cdbdcd14)
 
 ### Repository Layout
 
