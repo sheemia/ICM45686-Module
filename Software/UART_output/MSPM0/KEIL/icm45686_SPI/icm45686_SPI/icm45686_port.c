@@ -24,6 +24,8 @@ static inv_imu_device_t  imu_dev; /* Driver structure */
 //static uint8_t discard_gyro_samples; /* Indicates how many gyro samples should be discarded */
 
 
+void delay_us(uint32_t __us) { delay_cycles( (CPUCLK_FREQ / 1000 / 1000)*__us); }
+void delay_ms(uint32_t __ms) { delay_cycles( (CPUCLK_FREQ / 1000)*__ms); }
 
 int si_print_error_if_any(int rc);
 #define SI_CHECK_RC(rc)                                                                            \

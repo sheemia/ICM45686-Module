@@ -1,0 +1,4 @@
+
+# JYTech release publisher: preserve binary downloads
+*.pdf -text -diff -merge
+*.exe -text -diff -merge

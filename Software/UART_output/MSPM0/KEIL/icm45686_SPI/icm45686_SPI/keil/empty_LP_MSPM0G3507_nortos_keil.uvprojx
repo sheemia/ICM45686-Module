@@ -70,7 +70,7 @@
             <nStopU2X>0</nStopU2X>
           </BeforeCompile>
           <BeforeMake>
-            <RunUserProg1>1</RunUserProg1>
+              <RunUserProg1>0</RunUserProg1>
             <RunUserProg2>0</RunUserProg2>
             <UserProg1Name>cmd.exe /C "$P../../tools/keil/syscfg.bat '$P' empty.syscfg"</UserProg1Name>
             <UserProg2Name></UserProg2Name>
@@ -410,11 +410,6 @@
               <FilePath>../ti_msp_dl_config.c</FilePath>
             </File>
             <File>
-              <FileName>board.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\board.c</FilePath>
-            </File>
-            <File>
               <FileName>icm45686_port.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\icm45686_port.c</FilePath>
@@ -428,11 +423,6 @@
               <FileName>bsp_spi.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\BSP\bsp_spi.c</FilePath>
-            </File>
-            <File>
-              <FileName>bsp_iic.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\bsp_iic.c</FilePath>
             </File>
           </Files>
         </Group>

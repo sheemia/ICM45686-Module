@@ -78,12 +78,28 @@ extern "C" {
 
 
 
-/* Defines for TIMER_1 */
-#define TIMER_1_INST                                                     (TIMA1)
-#define TIMER_1_INST_IRQHandler                                 TIMA1_IRQHandler
-#define TIMER_1_INST_INT_IRQN                                   (TIMA1_INT_IRQn)
-#define TIMER_1_INST_LOAD_VALUE                                             (9U)
+/* Defines for TIMER_0 */
+#define TIMER_0_INST                                                     (TIMG0)
+#define TIMER_0_INST_IRQHandler                                 TIMG0_IRQHandler
+#define TIMER_0_INST_INT_IRQN                                   (TIMG0_INT_IRQn)
+#define TIMER_0_INST_LOAD_VALUE                                           (799U)
 
+
+
+
+/* Defines for I2C_0 */
+#define I2C_0_INST                                                          I2C0
+#define I2C_0_INST_IRQHandler                                    I2C0_IRQHandler
+#define I2C_0_INST_INT_IRQN                                        I2C0_INT_IRQn
+#define I2C_0_BUS_SPEED_HZ                                                100000
+#define GPIO_I2C_0_SDA_PORT                                                GPIOA
+#define GPIO_I2C_0_SDA_PIN                                         DL_GPIO_PIN_0
+#define GPIO_I2C_0_IOMUX_SDA                                      (IOMUX_PINCM1)
+#define GPIO_I2C_0_IOMUX_SDA_FUNC                       IOMUX_PINCM1_PF_I2C0_SDA
+#define GPIO_I2C_0_SCL_PORT                                                GPIOA
+#define GPIO_I2C_0_SCL_PIN                                         DL_GPIO_PIN_1
+#define GPIO_I2C_0_IOMUX_SCL                                      (IOMUX_PINCM2)
+#define GPIO_I2C_0_IOMUX_SCL_FUNC                       IOMUX_PINCM2_PF_I2C0_SCL
 
 
 /* Defines for UART_0 */
@@ -106,47 +122,6 @@ extern "C" {
 
 
 
-/* Defines for SPI */
-#define SPI_INST                                                           SPI1
-#define SPI_INST_IRQHandler                                     SPI1_IRQHandler
-#define SPI_INST_INT_IRQN                                         SPI1_INT_IRQn
-#define GPIO_SPI_PICO_PORT                                                GPIOB
-#define GPIO_SPI_PICO_PIN                                         DL_GPIO_PIN_8
-#define GPIO_SPI_IOMUX_PICO                                     (IOMUX_PINCM25)
-#define GPIO_SPI_IOMUX_PICO_FUNC                     IOMUX_PINCM25_PF_SPI1_PICO
-#define GPIO_SPI_POCI_PORT                                                GPIOB
-#define GPIO_SPI_POCI_PIN                                         DL_GPIO_PIN_7
-#define GPIO_SPI_IOMUX_POCI                                     (IOMUX_PINCM24)
-#define GPIO_SPI_IOMUX_POCI_FUNC                     IOMUX_PINCM24_PF_SPI1_POCI
-/* GPIO configuration for SPI */
-#define GPIO_SPI_SCLK_PORT                                                GPIOB
-#define GPIO_SPI_SCLK_PIN                                         DL_GPIO_PIN_9
-#define GPIO_SPI_IOMUX_SCLK                                     (IOMUX_PINCM26)
-#define GPIO_SPI_IOMUX_SCLK_FUNC                     IOMUX_PINCM26_PF_SPI1_SCLK
-#define GPIO_SPI_CS0_PORT                                                 GPIOA
-#define GPIO_SPI_CS0_PIN                                          DL_GPIO_PIN_2
-#define GPIO_SPI_IOMUX_CS0                                       (IOMUX_PINCM7)
-#define GPIO_SPI_IOMUX_CS0_FUNC                        IOMUX_PINCM7_PF_SPI1_CS0
-
-
-
-/* Port definition for Pin Group CS */
-#define CS_PORT                                                          (GPIOB)
-
-/* Defines for PIN: GPIOB.6 with pinCMx 23 on package pin 58 */
-#define CS_PIN_PIN                                               (DL_GPIO_PIN_6)
-#define CS_PIN_IOMUX                                             (IOMUX_PINCM23)
-/* Port definition for Pin Group IIC_Software */
-#define IIC_Software_PORT                                                (GPIOA)
-
-/* Defines for SCL: GPIOA.1 with pinCMx 2 on package pin 34 */
-#define IIC_Software_SCL_PIN                                     (DL_GPIO_PIN_1)
-#define IIC_Software_SCL_IOMUX                                    (IOMUX_PINCM2)
-/* Defines for SDA: GPIOA.0 with pinCMx 1 on package pin 33 */
-#define IIC_Software_SDA_PIN                                     (DL_GPIO_PIN_0)
-#define IIC_Software_SDA_IOMUX                                    (IOMUX_PINCM1)
-
-
 
 /* clang-format on */
 
@@ -154,11 +129,9 @@ void SYSCFG_DL_init(void);
 void SYSCFG_DL_initPower(void);
 void SYSCFG_DL_GPIO_init(void);
 void SYSCFG_DL_SYSCTL_init(void);
-void SYSCFG_DL_TIMER_1_init(void);
+void SYSCFG_DL_TIMER_0_init(void);
+void SYSCFG_DL_I2C_0_init(void);
 void SYSCFG_DL_UART_0_init(void);
-void SYSCFG_DL_SPI_init(void);
-
-void SYSCFG_DL_SYSTICK_init(void);
 
 bool SYSCFG_DL_saveConfiguration(void);
 bool SYSCFG_DL_restoreConfiguration(void);

@@ -1,7 +1,7 @@
 #ifndef _BSP_SPI_H__
 #define _BSP_SPI_H__
 
-#include "board.h"
+#include "ti_msp_dl_config.h"
 
 //CS引脚的输出控制 
 //x=0时输出低电平

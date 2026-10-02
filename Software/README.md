@@ -68,3 +68,11 @@ JYTech 版本默认使用 `115200 8N1`，不输出启动提示或调试文本，
 3. JYTech 版本必须以二进制方式发送完整数据帧，不要在同一串口插入 `printf`、`Serial.print` 等文本。
 4. 所有多字节字段均按小端序发送，目标 MCU 和上位机需使用 IEEE 754 单精度浮点格式。
 5. 修改量程后必须同步调整加速度和角速度换算系数，否则上位机显示值会不正确。
+
+## MSPM0 Keil SPI 与 XDS110 烧录
+
+Keil SPI 示例位于 `JYTechStudio_output/MSPM0/KEIL/icm45686_SPI/icm45686_SPI/keil/`，其应用层、SPI 驱动、IMU 驱动及 `empty.syscfg` 与 CCS SPI 示例保持一致。
+
+Keil 自带的 TI XDS/CMSIS-DAP 插件在部分 XDS110 环境中无法识别探针。该工程已配置为在 **F7（Build）** 成功后自动调用 TI UniFlash 完成写入、校验、系统复位和运行。请勿使用 **F8** 下载。
+
+默认要求 UniFlash 安装在 `C:\ti\uniflash_9.2.0`。如安装在其他目录，请设置环境变量 `UNIFLASH_ROOT` 为 UniFlash 根目录。详细说明见 Keil 工程内的 `KEIL_XDS110_FLASH.md`。

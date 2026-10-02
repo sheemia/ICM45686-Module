@@ -40,9 +40,6 @@
 
 #include "ti_msp_dl_config.h"
 
-DL_TimerA_backupConfig gTIMER_1Backup;
-DL_SPI_backupConfig gSPIBackup;
-
 /*
  *  ======== SYSCFG_DL_init ========
  *  Perform any initialization needed before using any board APIs
@@ -53,88 +50,47 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_GPIO_init();
     /* Module-Specific Initializations*/
     SYSCFG_DL_SYSCTL_init();
-    SYSCFG_DL_TIMER_1_init();
+    SYSCFG_DL_TIMER_0_init();
+    SYSCFG_DL_I2C_0_init();
     SYSCFG_DL_UART_0_init();
-    SYSCFG_DL_SPI_init();
-    SYSCFG_DL_SYSTICK_init();
-    /* Ensure backup structures have no valid state */
-	gTIMER_1Backup.backupRdy 	= false;
-
-	gSPIBackup.backupRdy 	= false;
-
-}
-/*
- * User should take care to save and restore register configuration in application.
- * See Retention Configuration section for more details.
- */
-SYSCONFIG_WEAK bool SYSCFG_DL_saveConfiguration(void)
-{
-    bool retStatus = true;
-
-	retStatus &= DL_TimerA_saveConfiguration(TIMER_1_INST, &gTIMER_1Backup);
-	retStatus &= DL_SPI_saveConfiguration(SPI_INST, &gSPIBackup);
-
-    return retStatus;
 }
 
 
-SYSCONFIG_WEAK bool SYSCFG_DL_restoreConfiguration(void)
-{
-    bool retStatus = true;
-
-	retStatus &= DL_TimerA_restoreConfiguration(TIMER_1_INST, &gTIMER_1Backup, false);
-	retStatus &= DL_SPI_restoreConfiguration(SPI_INST, &gSPIBackup);
-
-    return retStatus;
-}
 
 SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
 {
     DL_GPIO_reset(GPIOA);
     DL_GPIO_reset(GPIOB);
-    DL_TimerA_reset(TIMER_1_INST);
+    DL_TimerG_reset(TIMER_0_INST);
+    DL_I2C_reset(I2C_0_INST);
     DL_UART_Main_reset(UART_0_INST);
-    DL_SPI_reset(SPI_INST);
-
 
     DL_GPIO_enablePower(GPIOA);
     DL_GPIO_enablePower(GPIOB);
-    DL_TimerA_enablePower(TIMER_1_INST);
+    DL_TimerG_enablePower(TIMER_0_INST);
+    DL_I2C_enablePower(I2C_0_INST);
     DL_UART_Main_enablePower(UART_0_INST);
-    DL_SPI_enablePower(SPI_INST);
-
     delay_cycles(POWER_STARTUP_DELAY);
 }
 
 SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
 {
 
+    DL_GPIO_initPeripheralInputFunctionFeatures(GPIO_I2C_0_IOMUX_SDA,
+        GPIO_I2C_0_IOMUX_SDA_FUNC, DL_GPIO_INVERSION_DISABLE,
+        DL_GPIO_RESISTOR_NONE, DL_GPIO_HYSTERESIS_DISABLE,
+        DL_GPIO_WAKEUP_DISABLE);
+    DL_GPIO_initPeripheralInputFunctionFeatures(GPIO_I2C_0_IOMUX_SCL,
+        GPIO_I2C_0_IOMUX_SCL_FUNC, DL_GPIO_INVERSION_DISABLE,
+        DL_GPIO_RESISTOR_NONE, DL_GPIO_HYSTERESIS_DISABLE,
+        DL_GPIO_WAKEUP_DISABLE);
+    DL_GPIO_enableHiZ(GPIO_I2C_0_IOMUX_SDA);
+    DL_GPIO_enableHiZ(GPIO_I2C_0_IOMUX_SCL);
+
     DL_GPIO_initPeripheralOutputFunction(
         GPIO_UART_0_IOMUX_TX, GPIO_UART_0_IOMUX_TX_FUNC);
     DL_GPIO_initPeripheralInputFunction(
         GPIO_UART_0_IOMUX_RX, GPIO_UART_0_IOMUX_RX_FUNC);
-
-    DL_GPIO_initPeripheralOutputFunction(
-        GPIO_SPI_IOMUX_SCLK, GPIO_SPI_IOMUX_SCLK_FUNC);
-    DL_GPIO_initPeripheralOutputFunction(
-        GPIO_SPI_IOMUX_PICO, GPIO_SPI_IOMUX_PICO_FUNC);
-    DL_GPIO_initPeripheralInputFunction(
-        GPIO_SPI_IOMUX_POCI, GPIO_SPI_IOMUX_POCI_FUNC);
-    DL_GPIO_initPeripheralOutputFunction(
-        GPIO_SPI_IOMUX_CS0, GPIO_SPI_IOMUX_CS0_FUNC);
-
-    DL_GPIO_initDigitalOutput(CS_PIN_IOMUX);
-
-    DL_GPIO_initDigitalOutput(IIC_Software_SCL_IOMUX);
-
-    DL_GPIO_initDigitalOutput(IIC_Software_SDA_IOMUX);
-
-    DL_GPIO_setPins(IIC_Software_PORT, IIC_Software_SCL_PIN |
-		IIC_Software_SDA_PIN);
-    DL_GPIO_enableOutput(IIC_Software_PORT, IIC_Software_SCL_PIN |
-		IIC_Software_SDA_PIN);
-    DL_GPIO_clearPins(CS_PORT, CS_PIN_PIN);
-    DL_GPIO_enableOutput(CS_PORT, CS_PIN_PIN);
 
 }
 
@@ -158,35 +114,35 @@ SYSCONFIG_WEAK void SYSCFG_DL_SYSCTL_init(void)
 
 
 /*
- * Timer clock configuration to be sourced by BUSCLK /  (8000000 Hz)
+ * Timer clock configuration to be sourced by BUSCLK /  (4000000 Hz)
  * timerClkFreq = (timerClkSrc / (timerClkDivRatio * (timerClkPrescale + 1)))
- *   100000 Hz = 8000000 Hz / (4 * (79 + 1))
+ *   40000 Hz = 4000000 Hz / (8 * (99 + 1))
  */
-static const DL_TimerA_ClockConfig gTIMER_1ClockConfig = {
+static const DL_TimerG_ClockConfig gTIMER_0ClockConfig = {
     .clockSel    = DL_TIMER_CLOCK_BUSCLK,
-    .divideRatio = DL_TIMER_CLOCK_DIVIDE_4,
-    .prescale    = 79U,
+    .divideRatio = DL_TIMER_CLOCK_DIVIDE_8,
+    .prescale    = 99U,
 };
 
 /*
  * Timer load value (where the counter starts from) is calculated as (timerPeriod * timerClockFreq) - 1
- * TIMER_1_INST_LOAD_VALUE = (100us * 100000 Hz) - 1
+ * TIMER_0_INST_LOAD_VALUE = (20 ms * 40000 Hz) - 1
  */
-static const DL_TimerA_TimerConfig gTIMER_1TimerConfig = {
-    .period     = TIMER_1_INST_LOAD_VALUE,
+static const DL_TimerG_TimerConfig gTIMER_0TimerConfig = {
+    .period     = TIMER_0_INST_LOAD_VALUE,
     .timerMode  = DL_TIMER_TIMER_MODE_PERIODIC,
     .startTimer = DL_TIMER_START,
 };
 
-SYSCONFIG_WEAK void SYSCFG_DL_TIMER_1_init(void) {
+SYSCONFIG_WEAK void SYSCFG_DL_TIMER_0_init(void) {
 
-    DL_TimerA_setClockConfig(TIMER_1_INST,
-        (DL_TimerA_ClockConfig *) &gTIMER_1ClockConfig);
+    DL_TimerG_setClockConfig(TIMER_0_INST,
+        (DL_TimerG_ClockConfig *) &gTIMER_0ClockConfig);
 
-    DL_TimerA_initTimerMode(TIMER_1_INST,
-        (DL_TimerA_TimerConfig *) &gTIMER_1TimerConfig);
-    DL_TimerA_enableInterrupt(TIMER_1_INST , DL_TIMERA_INTERRUPT_ZERO_EVENT);
-    DL_TimerA_enableClock(TIMER_1_INST);
+    DL_TimerG_initTimerMode(TIMER_0_INST,
+        (DL_TimerG_TimerConfig *) &gTIMER_0TimerConfig);
+    DL_TimerG_enableInterrupt(TIMER_0_INST , DL_TIMERG_INTERRUPT_ZERO_EVENT);
+    DL_TimerG_enableClock(TIMER_0_INST);
 
 
 
@@ -195,6 +151,33 @@ SYSCONFIG_WEAK void SYSCFG_DL_TIMER_1_init(void) {
 }
 
 
+static const DL_I2C_ClockConfig gI2C_0ClockConfig = {
+    .clockSel = DL_I2C_CLOCK_BUSCLK,
+    .divideRatio = DL_I2C_CLOCK_DIVIDE_1,
+};
+
+SYSCONFIG_WEAK void SYSCFG_DL_I2C_0_init(void) {
+
+    DL_I2C_setClockConfig(I2C_0_INST,
+        (DL_I2C_ClockConfig *) &gI2C_0ClockConfig);
+    DL_I2C_setAnalogGlitchFilterPulseWidth(I2C_0_INST,
+        DL_I2C_ANALOG_GLITCH_FILTER_WIDTH_50NS);
+    DL_I2C_enableAnalogGlitchFilter(I2C_0_INST);
+
+    /* Configure Controller Mode */
+    DL_I2C_resetControllerTransfer(I2C_0_INST);
+    /* Set frequency to 100000 Hz*/
+    DL_I2C_setTimerPeriod(I2C_0_INST, 31);
+    DL_I2C_setControllerTXFIFOThreshold(I2C_0_INST, DL_I2C_TX_FIFO_LEVEL_BYTES_1);
+    DL_I2C_setControllerRXFIFOThreshold(I2C_0_INST, DL_I2C_RX_FIFO_LEVEL_BYTES_1);
+    DL_I2C_enableControllerClockStretching(I2C_0_INST);
+
+
+    /* Enable module */
+    DL_I2C_enableController(I2C_0_INST);
+
+
+}
 
 static const DL_UART_Main_ClockConfig gUART_0ClockConfig = {
     .clockSel    = DL_UART_MAIN_CLOCK_MFCLK,
@@ -224,52 +207,7 @@ SYSCONFIG_WEAK void SYSCFG_DL_UART_0_init(void)
     DL_UART_Main_setBaudRateDivisor(UART_0_INST, UART_0_IBRD_4_MHZ_115200_BAUD, UART_0_FBRD_4_MHZ_115200_BAUD);
 
 
-    /* Configure Interrupts */
-    DL_UART_Main_enableInterrupt(UART_0_INST,
-                                 DL_UART_MAIN_INTERRUPT_RX);
-
 
     DL_UART_Main_enable(UART_0_INST);
-}
-
-static const DL_SPI_Config gSPI_config = {
-    .mode        = DL_SPI_MODE_CONTROLLER,
-    .frameFormat = DL_SPI_FRAME_FORMAT_MOTO4_POL1_PHA1,
-    .parity      = DL_SPI_PARITY_NONE,
-    .dataSize    = DL_SPI_DATA_SIZE_8,
-    .bitOrder    = DL_SPI_BIT_ORDER_MSB_FIRST,
-    .chipSelectPin = DL_SPI_CHIP_SELECT_0,
-};
-
-static const DL_SPI_ClockConfig gSPI_clockConfig = {
-    .clockSel    = DL_SPI_CLOCK_BUSCLK,
-    .divideRatio = DL_SPI_CLOCK_DIVIDE_RATIO_1
-};
-
-SYSCONFIG_WEAK void SYSCFG_DL_SPI_init(void) {
-    DL_SPI_setClockConfig(SPI_INST, (DL_SPI_ClockConfig *) &gSPI_clockConfig);
-
-    DL_SPI_init(SPI_INST, (DL_SPI_Config *) &gSPI_config);
-
-    /* Configure Controller mode */
-    /*
-     * Set the bit rate clock divider to generate the serial output clock
-     *     outputBitRate = (spiInputClock) / ((1 + SCR) * 2)
-     *     2000000 = (32000000)/((1 + 7) * 2)
-     */
-    DL_SPI_setBitRateSerialClockDivider(SPI_INST, 7);
-    /* Set RX and TX FIFO threshold levels */
-    DL_SPI_setFIFOThreshold(SPI_INST, DL_SPI_RX_FIFO_LEVEL_1_2_FULL, DL_SPI_TX_FIFO_LEVEL_1_2_EMPTY);
-
-    /* Enable module */
-    DL_SPI_enable(SPI_INST);
-}
-
-SYSCONFIG_WEAK void SYSCFG_DL_SYSTICK_init(void)
-{
-    /* Initialize the period to 1.00 μs */
-    DL_SYSTICK_init(32);
-    /* Enable the SysTick and start counting */
-    DL_SYSTICK_enable();
 }
 

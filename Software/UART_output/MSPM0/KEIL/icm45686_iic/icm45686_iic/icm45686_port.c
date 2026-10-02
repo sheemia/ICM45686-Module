@@ -15,7 +15,6 @@
 #define UI_I2C  0 /**< identifies I2C interface. */
 #define UI_SPI4 1 /**< identifies 4-wire SPI interface. */
 
-#define	SPI_IMU_CS PAout(2)  //选中IMU	
 
 #define INV_MSG(level,msg, ...) 	      printf("%d," msg "\r\n", __LINE__, ##__VA_ARGS__)
 
@@ -25,6 +24,8 @@ static inv_imu_device_t  imu_dev; /* Driver structure */
 //static uint8_t discard_gyro_samples; /* Indicates how many gyro samples should be discarded */
 
 
+void delay_us(uint32_t __us) { delay_cycles( (CPUCLK_FREQ / 1000 / 1000)*__us); }
+void delay_ms(uint32_t __ms) { delay_cycles( (CPUCLK_FREQ / 1000)*__ms); }
 
 int si_print_error_if_any(int rc);
 #define SI_CHECK_RC(rc)                                                                            \
@@ -81,19 +82,19 @@ static int icm45686_read_regs(uint8_t reg, uint8_t* buf, uint32_t len)
 {
 #if defined(ICM_USE_HARD_SPI)
     reg |= 0x80;
-    SPI_IMU_CS=0;
+    SPI_CS(0);
     /* 写入要读的寄存器地址 */
-    SPI2_ReadWriteByte(reg);
+    spi_read_write_byte(reg);
     /* 读取寄存器数据 */
     while(len)
 	{
-		*buf = SPI2_ReadWriteByte(0x00);
+		*buf = spi_read_write_byte(0x00);
 		len--;
 		buf++;
 	}
-    SPI_IMU_CS=1;
+    SPI_CS(1);
 #elif defined(ICM_USE_I2C)
-	IICreadBytes(ICM_I2C_ADDR, reg, len, buf);
+	I2C_ReadReg(ICM_I2C_ADDR, reg, buf,len);
 #endif
 	return 0;
 }
@@ -101,15 +102,15 @@ static int icm45686_read_regs(uint8_t reg, uint8_t* buf, uint32_t len)
 static uint8_t io_write_reg(uint8_t reg, uint8_t value)
 {
 #if defined(ICM_USE_HARD_SPI)
-    SPI_IMU_CS=0;
+    SPI_CS(0);
     /* 写入要读的寄存器地址 */
     /* 写入要读的寄存器地址 */
-    SPI2_ReadWriteByte(reg);
+    spi_read_write_byte(reg);
     /* 读取寄存器数据 */
-    SPI2_ReadWriteByte(value);
-    SPI_IMU_CS=1;
+    spi_read_write_byte(value);
+    SPI_CS(1);
 #elif defined(ICM_USE_I2C)
-	IICwriteBytes(ICM_I2C_ADDR, reg, 1, &value);
+	I2C_WriteReg(ICM_I2C_ADDR, reg, &value,1);
 #endif
     return 0;
 }
